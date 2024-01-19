@@ -19,21 +19,25 @@ export class TasksController {
 
     @Post()
     public createTask(@Body() createTaskDTO: CreateTaskDTO): Promise<CreateTaskDTO> {
+        
         return this.tasksService.createTask(createTaskDTO);
     }
 
     @Get("/:id")
     public getTaskById(@Param("id") id: number): Promise<Task> {
+        
         return this.tasksService.getTaskById(id);
     }
 
     @Delete("/:id")
     public removeById(@Param("id") id: number): Promise<void> {
+        
         return this.tasksService.removeById(id);
     }
 
     @Put("/:id/status")
     public updateTaskStatus(@Param("id") id: number, @Body() updateTaskStatusDto: UpdateTaskStatusDto): Promise<Task> {
+        
         return this.tasksService.updateTaskStatus(id, updateTaskStatusDto.status);
     }
 }

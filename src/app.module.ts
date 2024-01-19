@@ -1,19 +1,25 @@
 import { Module } from '@nestjs/common';
-import { TasksModule } from './tasks/tasks.module';
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { TypeOrmModule} from "@nestjs/typeorm";
+import { AuthModule } from 'src/modules/auth/auth.module';
+import { TasksModule } from 'src/modules/tasks/tasks.module';
+import { ConfigModule,ConfigService } from '@nestjs/config';
+import {
+  typeormConfig
+} from "./common/config";
+
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: "postgres",
-      host: "localhost",
-      port: 5433,
-      username: "postgres",
-      password: "postgres",
-      database: "task-management",
-      autoLoadEntities: true,
-      synchronize: true,
+    ConfigModule.forRoot({
+      envFilePath: '.development.env',
     }),
-    TasksModule
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: typeormConfig,
+    }),
+
+    TasksModule,
+    AuthModule
   ],
 })
 export class AppModule { }

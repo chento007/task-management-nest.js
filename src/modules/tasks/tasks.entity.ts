@@ -1,15 +1,9 @@
 import { Column, Entity, Generated, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm"
 import { TaskStatus } from "./tasks-status.enum";
+import { CommonEntity } from "src/common/entity/common.entity";
 
 @Entity()
-export class Task {
-
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column()
-    @Generated("uuid")
-    uuid: string
+export class Task extends CommonEntity{
 
     @Column()
     title: string;
