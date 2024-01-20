@@ -20,14 +20,14 @@ export class UserController {
 
     @Get()
     @Roles([AppRoles.ADMINS])
-    @UseGuards(RolesGuard)
+    @UseGuards(AuthGuard("jwt"), RolesGuard)
     public getAll(): Promise<User[]> {
 
         return this.userService.findAll();
     }
 
     @Post()
-    public create(@Body() createUserDto: CreateUserDto):Promise<TokenBaseRest>{
+    public create(@Body() createUserDto: CreateUserDto): Promise<TokenBaseRest> {
 
         return this.userService.create(createUserDto);
     }

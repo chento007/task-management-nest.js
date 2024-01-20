@@ -7,6 +7,8 @@ import { User } from './user.entity';
 import { JwtStrategy } from 'src/common/strategy/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from 'src/common/guard/roles.guard';
 
 @Module({
   imports: [
@@ -19,9 +21,13 @@ import { ConfigModule } from '@nestjs/config';
         expiresIn: 3600
       }
     }),
+
   ],
   controllers: [UserController],
-  providers: [UsersService, JwtStrategy],
+  providers: [UsersService, JwtStrategy, {
+    provide: APP_GUARD,
+    useClass: RolesGuard,
+  },],
   exports: [JwtStrategy, PassportModule, UsersService]
 })
 export class UserModule { }

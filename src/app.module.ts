@@ -26,14 +26,10 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler"
     AuthModule,
     ThrottlerModule.forRoot([{
       ttl: 60000,
-      limit: 2,
+      limit: 100,
     }]),
   ],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard

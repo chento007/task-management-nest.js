@@ -13,6 +13,7 @@ import { LoginDto } from './dto/login-user.dto';
 import { SelectQueryBuilder } from 'typeorm';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import RequestWithUser from 'src/common/interface/request-with-user.interface';
+import { Role } from '../role/role.entity';
 
 
 @Injectable()
@@ -28,14 +29,14 @@ export class AuthService {
     public async signup(registerUserDto: RegisterUserDto): Promise<TokenBaseRest> {
         let { email, password } = registerUserDto;
 
-        const isFound = await this.userRepository.findOneBy({ email: email })
-        if (isFound || isFound === null) {
+        const isFound = await this.userRepository.findOneBy({ email: email });
+        if (isFound || isFound !== null) {
             throw new BadRequestException("Email is already exist.")
         }
 
         password = await Hash.makeHash(password);
-        await this.userRepository.save({ email, password });
-        return null;
+        const user = await this.userRepository.save({ email, password, roles: [new Role()] });
+        return this.getTokens(user.id);
     }
 
     public async login(logindto: LoginDto): Promise<TokenBaseRest> {

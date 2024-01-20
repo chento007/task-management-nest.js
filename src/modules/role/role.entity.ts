@@ -5,6 +5,10 @@ import { User } from "../user/user.entity";
 @Entity()
 export class Role {
 
+    constructor(){
+        this.id = 1;
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 
