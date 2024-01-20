@@ -5,8 +5,10 @@ import { CreateTaskDTO } from './dto/create-task.dto';
 import { GetTaskFilterDto } from './dto/get-task-filter.dto';
 import { UpdateTaskStatusDto } from './dto/update-task.dto';
 import { Task } from './tasks.entity';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('api/v1/tasks')
+@ApiTags('tasks')
 export class TasksController {
 
     constructor(private tasksService: TasksService) { }

@@ -4,6 +4,10 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from 'src/modules/user/user.service';
 
+
+/**
+ * This class use to make user required authorized
+ */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy,"jwt") {
   constructor(

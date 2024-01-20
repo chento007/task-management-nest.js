@@ -4,11 +4,24 @@ import { UsersService } from './user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UserController } from './user.controller';
 import { User } from './user.entity';
+import { JwtStrategy } from 'src/common/strategy/jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), JwtModule.register({})],
-  exports: [UsersService],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    PassportModule.register({ defaultStrategy: "jwt" }),
+    ConfigModule,
+    JwtModule.register({
+      secret: "cdw7232hidwuy23232wefewfs1213",
+      signOptions: {
+        expiresIn: 3600
+      }
+    }),
+  ],
   controllers: [UserController],
-  providers: [UsersService],
+  providers: [UsersService, JwtStrategy],
+  exports: [JwtStrategy, PassportModule, UsersService]
 })
-export class UserModule {}
+export class UserModule { }

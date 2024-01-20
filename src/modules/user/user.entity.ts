@@ -1,6 +1,8 @@
 import { IsDate, IsEmail } from "class-validator";
 import { CommonEntity } from "src/common/entity/common.entity";
-import { BaseEntity, Column, CreateDateColumn, Entity, Generated, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, Generated, JoinTable, ManyToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Role } from "../role/role.entity";
+import { Exclude } from "class-transformer";
 
 @Entity()
 export class User extends CommonEntity {
@@ -20,15 +22,15 @@ export class User extends CommonEntity {
     email: string;
 
     @Column({
-        type : "text"
+        type: "text"
     })
+    
     password: string;
 
-    @Column({
-        nullable: true,
-      })
-      // @Exclude()
-    public refreshToken?: string;
-    
+    @Column({ nullable: true })
+    refreshToken?: string;
 
+    @ManyToMany(() => Role, (role) => role.user, { eager: true })
+    @JoinTable()
+    roles: Role[];
 }

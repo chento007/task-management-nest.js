@@ -3,6 +3,5 @@ import { ExecutionContextHost } from "@nestjs/core/helpers/execution-context-hos
 import { User } from "src/modules/user/user.entity";
 
 export const GetUser = createParamDecorator((req): User => {
-    console.log("work here",req.user)
     return req.user;
   });

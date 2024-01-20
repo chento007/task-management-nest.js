@@ -1,4 +1,4 @@
-import { Column, Entity, Generated, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, Generated, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm"
 import { TaskStatus } from "./tasks-status.enum";
 import { CommonEntity } from "src/common/entity/common.entity";
 
@@ -12,5 +12,5 @@ export class Task extends CommonEntity{
     description: string;
 
     @Column()
-    status: TaskStatus
+    status: TaskStatus;
 }

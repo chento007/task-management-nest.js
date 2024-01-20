@@ -33,7 +33,7 @@ export class AuthService {
             throw new BadRequestException("Email is already exist.")
         }
 
-        password = await Hash.makehash(password);
+        password = await Hash.makeHash(password);
         await this.userRepository.save({ email, password });
         return null;
     }
@@ -52,8 +52,8 @@ export class AuthService {
             throw new BadRequestException("Email or Password invalid");
         }
 
-        const tokens = await this.getTokens(user.id)
-        await this.updateRefreshToken(user.id,tokens.refreshToken);
+        const tokens = await this.getTokens(user.id);
+        await this.updateRefreshToken(user.id, tokens.refreshToken);
         return tokens;
     }
 
@@ -80,14 +80,14 @@ export class AuthService {
 
     public async updateRefreshToken(userId: number, refreshToken: string) {
 
-        const hashedRefreshToken = await Hash.makehash(refreshToken);
+        const hashedRefreshToken = await Hash.makeHash(refreshToken);
         await this.userRepository.update(userId, {
             refreshToken: hashedRefreshToken
         })
     }
 
     public async getTokens(userId: number) {
-        
+
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync({ id: userId, },
                 {
@@ -108,5 +108,12 @@ export class AuthService {
             refreshToken,
         };
     }
+
+    public async logout(request: RequestWithUser): Promise<boolean> {
+
+        const isUpdated = await this.userRepository.update(request.user.id, { refreshToken: null });
+        return isUpdated.affected > 0 ? true : false;
+    }
+
 
 }

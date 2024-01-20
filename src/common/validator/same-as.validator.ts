@@ -1,5 +1,11 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
+/**
+ * This function use make Same as some field like : password, confirmedPassword must be the same
+ * @param property 
+ * @param validationOptions 
+ * @returns 
+ */
 export function SameAs(
     property: string,
     validationOptions?: ValidationOptions,
