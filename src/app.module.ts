@@ -12,6 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserModule } from './modules/user/user.module';
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler"
 import { CaslModule } from './casl/casl.module';
+import { FileModule } from './modules/file/file.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -22,14 +23,16 @@ import { CaslModule } from './casl/casl.module';
       inject: [ConfigService],
       useFactory: typeormConfig,
     }),
-    UserModule,
-    TasksModule,
-    AuthModule,
     ThrottlerModule.forRoot([{
       ttl: 60000,
       limit: 100,
     }]),
+    UserModule,
+    TasksModule,
+    AuthModule,
     CaslModule,
+    FileModule,
+    ConfigModule
   ],
   providers: [
     {

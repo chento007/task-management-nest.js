@@ -27,6 +27,7 @@ export class AuthService {
     ) { }
 
     public async signup(registerUserDto: RegisterUserDto): Promise<TokenBaseRest> {
+
         let { email, password } = registerUserDto;
 
         const isFound = await this.userRepository.findOneBy({ email: email });
@@ -36,6 +37,7 @@ export class AuthService {
 
         password = await Hash.makeHash(password);
         const user = await this.userRepository.save({ email, password, roles: [new Role()] });
+
         return this.getTokens(user.id);
     }
 
