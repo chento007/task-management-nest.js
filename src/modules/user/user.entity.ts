@@ -31,8 +31,10 @@ export class User extends CommonEntity {
     @Exclude()
     refreshToken?: string;
 
+    @Column({ nullable: true })
+    thumbnail?: string;
+
     @ManyToMany(() => Role, (role) => role.user, { eager: true })
     @JoinTable()
     roles: Role[];
-
 }

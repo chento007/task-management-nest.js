@@ -4,23 +4,25 @@ import { FileDto } from "./dto/file.dto";
 import { ConfigService } from "@nestjs/config";
 import { v4 as uuid } from 'uuid';
 import { FileUtil } from "src/utils/FileUtil";
+import { join } from "path";
 const Path = require('path');
+const fs = require('fs');
 
 
 @Injectable()
-export class FileService{
+export class FileService {
 
     constructor(
-        private  configService:ConfigService
-    ){}
-    
-    public uploadSingleFile(file: Express.Multer.File):FileDto{
-        
-        if(!file){
+        private configService: ConfigService
+    ) { }
+
+    public uploadSingleFile(file: Express.Multer.File): FileDto {
+
+        if (!file) {
             throw new BadRequestException("File is required !");
         }
-        
-        return  {
+
+        return {
             filename: file.originalname,
             filenameUUID: file.filename,
             extension: Path.extname(file.originalname),
@@ -29,7 +31,29 @@ export class FileService{
         } as FileDto;;
     }
 
-    public ViewImage(){
-        
+    public viewImage(filename: string): string {
+
+        if (this.IsImageByNameExist(filename)) {
+            return join(this.configService.get<string>("FILE_IMAGE_LOCATION"),filename);
+        }
+
+        throw new BadRequestException(`Image ${filename} it not found.`);
     }
+
+    public IsImageByNameExist = (fileName: string): boolean => {
+
+        const dir = this.configService.get<string>("FILE_IMAGE_LOCATION");
+
+        // read the contents of the directory
+        const files = fs.readdirSync(dir);
+
+        for (const file of files) {
+            console.log(file)
+            if (file === fileName) {
+                return true;
+            }
+        }
+        return false;;
+    }
+
 }

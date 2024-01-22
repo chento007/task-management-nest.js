@@ -8,6 +8,7 @@ import { AuthService } from "../auth/auth.service";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { TokenBaseRest } from "../auth/dto/token-base-rest.dto";
+import { FilterOperator, FilterSuffix, PaginateQuery, Paginated, paginate } from "nestjs-paginate";
 
 @Injectable()
 export class UsersService {
@@ -19,9 +20,20 @@ export class UsersService {
     ) { }
 
 
-    public async findAll(): Promise<User[]> {
+    public async findAll(query: PaginateQuery): Promise<Paginated<User>> {
 
-        return await this.userRepository.find();
+        // return await this.userRepository.find();
+        return paginate(query, this.userRepository, {
+            sortableColumns: ['id'],
+            nullSort: 'last',
+            defaultSortBy: [['id', 'DESC']],
+            searchableColumns: ['username'],
+            select: ['id', 'username'],
+            filterableColumns: {
+                username: [FilterOperator.EQ, FilterSuffix.NOT],
+                age: true,
+            },
+        })
     }
 
     public async create(createUserDto: CreateUserDto): Promise<TokenBaseRest> {
@@ -80,7 +92,7 @@ export class UsersService {
         };
     }
 
-    
+
     public async get(userId: number) {
         return await this.userRepository.findBy({ id: userId });
     }

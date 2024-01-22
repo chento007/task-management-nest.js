@@ -10,6 +10,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { RolesGuard } from "src/common/guard/roles.guard";
 import { ApiTags } from "@nestjs/swagger";
 import { checkAbilites } from "src/common/decorator/abilities.decorator";
+import { Paginate, PaginateQuery, Paginated } from "nestjs-paginate";
 
 @Controller("api/v1/users")
 @ApiTags('users')
@@ -21,10 +22,10 @@ export class UserController {
 
     @Get()
     @Roles([AppRoles.ADMINS])
-    @UseGuards(AuthGuard("jwt"),RolesGuard)
-    public getAll(): Promise<User[]> {
+    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    public getAll(@Paginate() query: PaginateQuery): Promise<Paginated<User>> {
 
-        return this.userService.findAll();
+        return this.userService.findAll(query);
     }
 
     @checkAbilites({ action: 'manage', subject: 'all' })
