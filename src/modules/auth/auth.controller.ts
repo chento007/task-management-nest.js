@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, RequestMapping, UseGuards } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, HttpStatus, Post, Req, RequestMapping, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserRespooneDto } from './dto/user-respone.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -48,9 +48,17 @@ export class AuthController {
 
     @Get("/logout")
     @UseGuards(AuthGuard())
-    public async logout(@Req() request: RequestWithUser): Promise<boolean> {
+    public logout(@Req() request: RequestWithUser): Promise<boolean> {
 
         return this.authService.logout(request);
+    }
+
+    @Get("/me")
+    @UseGuards(AuthGuard("jwt"))
+    @UseInterceptors(ClassSerializerInterceptor)
+    public async getProfile(@Req() req: RequestWithUser): Promise<User> {
+        
+        return req.user;
     }
 
 }

@@ -11,6 +11,7 @@ import { RolesGuard } from './common/guard/roles.guard';
 import { JwtService } from '@nestjs/jwt';
 import { UserModule } from './modules/user/user.module';
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler"
+import { CaslModule } from './casl/casl.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +29,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler"
       ttl: 60000,
       limit: 100,
     }]),
+    CaslModule,
   ],
   providers: [
     {

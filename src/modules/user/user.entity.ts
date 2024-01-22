@@ -24,13 +24,15 @@ export class User extends CommonEntity {
     @Column({
         type: "text"
     })
-    
+    @Exclude()
     password: string;
 
     @Column({ nullable: true })
+    @Exclude()
     refreshToken?: string;
 
     @ManyToMany(() => Role, (role) => role.user, { eager: true })
     @JoinTable()
     roles: Role[];
+
 }

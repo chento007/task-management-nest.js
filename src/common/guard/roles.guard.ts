@@ -14,13 +14,17 @@ export class RolesGuard extends AuthGuard('jwt') {
     async canActivate(context: ExecutionContext): Promise<boolean> {
 
         // call AuthGuard in order to ensure user is injected in request
-        const roles = this.reflector.get(Roles, context.getHandler());
-        if(!roles){
+        const roles = this.reflector.get(Roles, context.getHandler()) || null;
+        if (!roles) {
             return true;
         }
 
         // successfull authentication, user is injected
         const { user } = context.switchToHttp().getRequest();
+        if(!user){
+            return true;
+        }
+
         if (user.roles.length > 0) {
             const hasMatchingRole: boolean = user.roles.some((userRole: Role) => {
                 return roles.some((item: string) => userRole.name === item);
@@ -30,7 +34,6 @@ export class RolesGuard extends AuthGuard('jwt') {
                 return true;
             }
         }
-
         return false;
     }
 }

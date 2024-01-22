@@ -9,6 +9,7 @@ import { AppRoles } from "src/common/enum/roles.enum";
 import { AuthGuard } from "@nestjs/passport";
 import { RolesGuard } from "src/common/guard/roles.guard";
 import { ApiTags } from "@nestjs/swagger";
+import { checkAbilites } from "src/common/decorator/abilities.decorator";
 
 @Controller("api/v1/users")
 @ApiTags('users')
@@ -20,12 +21,13 @@ export class UserController {
 
     @Get()
     @Roles([AppRoles.ADMINS])
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(AuthGuard("jwt"),RolesGuard)
     public getAll(): Promise<User[]> {
 
         return this.userService.findAll();
     }
 
+    @checkAbilites({ action: 'manage', subject: 'all' })
     @Post()
     public create(@Body() createUserDto: CreateUserDto): Promise<TokenBaseRest> {
 
