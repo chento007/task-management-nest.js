@@ -6,7 +6,7 @@ import { TokenBaseRest } from './dto/token-base-rest.dto';
 import { LoginDto } from './dto/login-user.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { RefreshTokenGuard } from 'src/common/guard/refresh-guard';
+import { RefreshTokenGuard } from 'src/common/guard/refresh.guard';
 import { GetUser } from 'src/common/decorator/get-user.decorators';
 import { User } from '../user/user.entity';
 import RequestWithUser from 'src/common/interface/request-with-user.interface';

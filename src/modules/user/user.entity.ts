@@ -37,6 +37,4 @@ export class User extends CommonEntity {
     @ManyToMany(() => Role, (role) => role.user, { eager: true })
     @JoinTable()
     roles: Role[];
-
-    
 }

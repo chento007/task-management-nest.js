@@ -1,6 +1,9 @@
 import { AppRoles } from "src/common/enum/roles.enum";
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user/user.entity";
+import {Permission} from "../permission/permission.entity";
+
+
 
 @Entity()
 export class Role {
@@ -20,4 +23,7 @@ export class Role {
 
     @ManyToMany(() => User, (user) => user.roles)
     user: User[];
+
+    @OneToMany(()=> Permission,(permission)=>permission.role, { eager: true })
+    permissions: Permission[];
 }

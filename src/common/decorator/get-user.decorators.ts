@@ -4,4 +4,4 @@ import { User } from "src/modules/user/user.entity";
 
 export const GetUser = createParamDecorator((req): User => {
     return req.user;
-  });
+});

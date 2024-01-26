@@ -11,3 +11,6 @@ export interface RequiredRule {
 
 export const checkAbilites = (...requirements: RequiredRule[]) =>
   SetMetadata(CHECK_ABILITY, requirements);
+
+
+  

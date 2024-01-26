@@ -7,16 +7,14 @@ import {
   typeormConfig
 } from "./common/config";
 import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './common/guard/roles.guard';
-import { JwtService } from '@nestjs/jwt';
 import { UserModule } from './modules/user/user.module';
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler"
-import { CaslModule } from './casl/casl.module';
 import { FileModule } from './modules/file/file.module';
+import { PermissionModule } from './modules/permission/permission.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.development.env',
+      envFilePath: '.env.development',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -30,16 +28,16 @@ import { FileModule } from './modules/file/file.module';
     UserModule,
     TasksModule,
     AuthModule,
-    CaslModule,
     FileModule,
-    ConfigModule
+    ConfigModule,
+    PermissionModule,
   ],
   providers: [
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard
     }
-    
+
   ]
 })
 export class AppModule { }

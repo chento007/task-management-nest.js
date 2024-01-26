@@ -12,8 +12,6 @@ export class FileUtil {
     }
 
     public static uploadFile(file: Express.Multer.File): FileDto {
-
-
         return {
             filename: file.originalname,
             filenameUUID: file.filename,

@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from 'src/common/guard/roles.guard';
+import { PermissionService } from '../permission/permission.service';
 
 @Module({
   imports: [

@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity,
   Generated,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -12,7 +11,6 @@ import {
  * Most common entity for course, user, and more
  * Provide all entity with id, created, deleted, and updated date
  */
-@Entity()
 export abstract class CommonEntity {
   
   @PrimaryGeneratedColumn()

@@ -27,14 +27,14 @@ export class FileService {
             filenameUUID: file.filename,
             extension: Path.extname(file.originalname),
             size: file.size,
-            url: "wait it progressing",
+            url: this.configService.get<string>("FILE_IMAGE_BASE_URL") + file.filename
         } as FileDto;;
     }
 
     public viewImage(filename: string): string {
 
         if (this.IsImageByNameExist(filename)) {
-            return join(this.configService.get<string>("FILE_IMAGE_LOCATION"),filename);
+            return join(this.configService.get<string>("FILE_IMAGE_LOCATION"), filename);
         }
 
         throw new BadRequestException(`Image ${filename} it not found.`);
@@ -44,7 +44,6 @@ export class FileService {
 
         const dir = this.configService.get<string>("FILE_IMAGE_LOCATION");
 
-        // read the contents of the directory
         const files = fs.readdirSync(dir);
 
         for (const file of files) {
