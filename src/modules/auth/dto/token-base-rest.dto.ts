@@ -1,6 +1,6 @@
-import { IsString } from "class-validator";
+import { IsString } from 'class-validator';
 
-export class TokenBaseRest{
-    accessToken: string;
-    refreshToken: string;
+export class TokenBaseRest {
+  access: string;
+  refresh: string;
 }

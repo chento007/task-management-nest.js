@@ -1,5 +1,4 @@
-import { Repository } from "typeorm";
-import { User } from "./user.entity";
+import { Repository } from 'typeorm';
+import { User } from './user.entity';
 
-
-export interface UserRepository extends Repository<User>{}
+export interface UserRepository extends Repository<User> {}

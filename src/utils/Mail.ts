@@ -1,3 +1,1 @@
-export class MailUtil{
-    
-}
+export class MailUtil {}

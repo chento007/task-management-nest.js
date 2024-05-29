@@ -1,16 +1,22 @@
-import { Column, Entity, Generated, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm"
-import { TaskStatus } from "./tasks-status.enum";
-import { CommonEntity } from "src/common/entity/common.entity";
+import {
+  Column,
+  Entity,
+  Generated,
+  ManyToOne,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { TaskStatus } from './tasks-status.enum';
+import { CommonEntity } from 'src/common/entity/common.entity';
 
 @Entity()
-export class Task extends CommonEntity{
+export class Task extends CommonEntity {
+  @Column()
+  title: string;
 
-    @Column()
-    title: string;
+  @Column()
+  description: string;
 
-    @Column()
-    description: string;
-
-    @Column()
-    status: TaskStatus;
+  @Column()
+  status: TaskStatus;
 }

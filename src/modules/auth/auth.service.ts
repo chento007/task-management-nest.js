@@ -1,5 +1,12 @@
 import { JwtService } from '@nestjs/jwt';
-import { BadRequestException, Injectable, NotFoundException, HttpException, HttpStatus, ForbiddenException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { UserRespooneDto } from './dto/user-respone.dto';
@@ -15,106 +22,113 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import RequestWithUser from 'src/common/interface/request-with-user.interface';
 import { Role } from '../role/role.entity';
 
-
 @Injectable()
 export class AuthService {
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+    @InjectRepository(User)
+    private readonly userRepository: UserRepository,
+  ) {}
 
-    constructor(
-        private readonly jwtService: JwtService,
-        private readonly configService: ConfigService,
-        @InjectRepository(User)
-        private readonly userRepository: UserRepository,
-    ) { }
+  public async signup(
+    registerUserDto: RegisterUserDto,
+  ): Promise<TokenBaseRest> {
+    let { email, password } = registerUserDto;
 
-    public async signup(registerUserDto: RegisterUserDto): Promise<TokenBaseRest> {
-        let { email, password } = registerUserDto;
-
-        const isFound = await this.userRepository.findOneBy({ email: email });
-        if (isFound || isFound !== null) {
-            throw new BadRequestException("Email is already exist.")
-        }
-
-        password = await Hash.makeHash(password);
-        const user = await this.userRepository.save({ email, password, roles: [new Role()] });
-        return this.getTokens(user.id);
+    const isFound = await this.userRepository.findOneBy({ email: email });
+    if (isFound || isFound !== null) {
+      throw new BadRequestException('Email is already exist.');
     }
 
-    public async login(logindto: LoginDto): Promise<TokenBaseRest> {
+    password = await Hash.makeHash(password);
+    const user = await this.userRepository.save({
+      email,
+      password,
+      roles: [new Role()],
+    });
+    return this.getTokens(user.id);
+  }
 
-        const { email, password } = logindto;
+  public async login(logindto: LoginDto): Promise<TokenBaseRest> {
+    const { email, password } = logindto;
 
-        const user = await this.userRepository.findOneBy({ email: email });
-        if (!user) {
-            throw new BadRequestException("Email or Password invalid");
-        }
-
-        const isMatched: boolean = await Hash.isMatch(password, user.password);
-        if (!isMatched) {
-            throw new BadRequestException("Email or Password invalid");
-        }
-
-        const tokens = await this.getTokens(user.id);
-        await this.updateRefreshToken(user.id, tokens.refreshToken);
-        return tokens;
+    const user = await this.userRepository.findOneBy({ email: email });
+    if (!user) {
+      throw new BadRequestException('Email or Password invalid');
     }
 
-
-    public async refreshToken(request: RequestWithUser, refreshTokenDto: RefreshTokenDto): Promise<TokenBaseRest> {
-
-        const { refreshToken } = refreshTokenDto;
-
-        const user = await this.userRepository.findOneBy({ id: request.user.id });
-        if (!user) {
-            throw new ForbiddenException('Access Denied');
-        }
-
-        const isRefreshTokenMatch = await Hash.isMatch(refreshToken, user.refreshToken);
-        if (!isRefreshTokenMatch) {
-            throw new ForbiddenException('Access Denied');
-        }
-
-        const tokens = await this.getTokens(user.id);
-        await this.updateRefreshToken(user.id, tokens.refreshToken)
-        return tokens;
+    const isMatched: boolean = await Hash.isMatch(password, user.password);
+    if (!isMatched) {
+      throw new BadRequestException('Email or Password invalid');
     }
 
+    const tokens = await this.getTokens(user.id);
+    await this.updateRefreshToken(user.id, tokens.refresh);
+    return tokens;
+  }
 
-    public async updateRefreshToken(userId: number, refreshToken: string) {
+  public async refresh(
+    request: RequestWithUser,
+    refreshTokenDto: RefreshTokenDto,
+  ): Promise<TokenBaseRest> {
+    const { refresh } = refreshTokenDto;
 
-        const hashedRefreshToken = await Hash.makeHash(refreshToken);
-        await this.userRepository.update(userId, {
-            refreshToken: hashedRefreshToken
-        })
+    const user = await this.userRepository.findOneBy({ id: request.user.id });
+    if (!user) {
+      throw new ForbiddenException('Access Denied');
     }
 
-    public async getTokens(userId: number) {
-
-        const [accessToken, refreshToken] = await Promise.all([
-            this.jwtService.signAsync({ id: userId, },
-                {
-                    secret: this.configService.get<string>('JWT_SECRET_KEY'),
-                    expiresIn: this.configService.get<string>('JWT_EXPIRATION_TIME'),
-                },
-            ),
-            this.jwtService.signAsync({ id: userId, },
-                {
-                    secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-                    expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION_TIME'),
-                },
-            ),
-        ]);
-
-        return {
-            accessToken,
-            refreshToken,
-        };
+    const isRefreshTokenMatch = await Hash.isMatch(
+      refresh,
+      user.refresh,
+    );
+    if (!isRefreshTokenMatch) {
+      throw new ForbiddenException('Access Denied');
     }
 
-    public async logout(request: RequestWithUser): Promise<boolean> {
+    const tokens = await this.getTokens(user.id);
+    await this.updateRefreshToken(user.id, tokens.refresh);
+    return tokens;
+  }
 
-        const isUpdated = await this.userRepository.update(request.user.id, { refreshToken: null });
-        return isUpdated.affected > 0 ? true : false;
-    }
+  public async updateRefreshToken(userId: number, refresh: string) {
+    const hashedRefreshToken = await Hash.makeHash(refresh);
+    await this.userRepository.update(userId, {
+      refresh: hashedRefreshToken,
+    });
+  }
 
+  public async getTokens(userId: number) {
+    const [access, refresh] = await Promise.all([
+      this.jwtService.signAsync(
+        { id: userId },
+        {
+          secret: this.configService.get<string>('JWT_SECRET_KEY'),
+          expiresIn: this.configService.get<string>('JWT_EXPIRATION_TIME'),
+        },
+      ),
+      this.jwtService.signAsync(
+        { id: userId },
+        {
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+          expiresIn: this.configService.get<string>(
+            'JWT_REFRESH_EXPIRATION_TIME',
+          ),
+        },
+      ),
+    ]);
 
+    return {
+      access,
+      refresh,
+    };
+  }
+
+  public async logout(request: RequestWithUser): Promise<boolean> {
+    const isUpdated = await this.userRepository.update(request.user.id, {
+      refresh: null,
+    });
+    return isUpdated.affected > 0 ? true : false;
+  }
 }

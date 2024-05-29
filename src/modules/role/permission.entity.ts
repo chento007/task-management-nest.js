@@ -1,14 +1,13 @@
-import { CommonEntity } from "src/common/entity/common.entity";
-import { Role } from "./role.entity";
-import { Column } from "typeorm";
+import { CommonEntity } from 'src/common/entity/common.entity';
+import { Role } from './role.entity';
+import { Column } from 'typeorm';
 
-export class Permission extends CommonEntity{
+export class Permission extends CommonEntity {
+  role: Role;
 
-    role : Role;
+  @Column()
+  actioon: string;
 
-    @Column()
-    actioon: string;
-
-    @Column()
-    subject: string;
+  @Column()
+  subject: string;
 }

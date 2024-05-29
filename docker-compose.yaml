@@ -1,0 +1,45 @@
+version: "3.4"
+services:
+  postgres-svc:
+    image: postgres:12
+    restart: always
+    container_name: postgres-container
+    ports:
+      - 5433:5432
+    networks:
+      - backend
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./:/var/lib/postgresql/data
+
+  api-nest-svc:
+    image: api-image:v1
+    container_name: api-container
+    restart: always
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    networks:
+      - backend
+    depends_on:
+      - postgres-svc
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+networks:
+  backend:
+    external: true
+    driver: bridge
+
+
+
+

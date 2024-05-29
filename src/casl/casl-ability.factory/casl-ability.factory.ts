@@ -1,4 +1,10 @@
-import { Ability, AbilityBuilder, AbilityClass, ExtractSubjectType, InferSubjects } from '@casl/ability';
+import {
+  Ability,
+  AbilityBuilder,
+  AbilityClass,
+  ExtractSubjectType,
+  InferSubjects,
+} from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 import { Action } from 'src/common/enum/action.enum';
 import { Task } from 'src/modules/tasks/tasks.entity';
@@ -13,7 +19,7 @@ export class CaslAbilityFactory {
   createForUser(user: User) {
     // const { can, cannot, build } = new AbilityBuilder<>
     // >(AbilityClass<AppAbility>);
-    console.log(user)
+    console.log(user);
     // if (user.isAdmin) {
     //   can(Action.Manage, 'all'); // read-write access to everything
     // } else {

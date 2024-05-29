@@ -13,21 +13,24 @@ import { RolesGuard } from 'src/common/guard/roles.guard';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    PassportModule.register({ defaultStrategy: "jwt" }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     ConfigModule,
     JwtModule.register({
-      secret: "cdw7232hidwuy23232wefewfs1213",
+      secret: 'cdw7232hidwuy23232wefewfs1213',
       signOptions: {
-        expiresIn: 3600
-      }
+        expiresIn: 3600,
+      },
     }),
-
   ],
   controllers: [UserController],
-  providers: [UsersService, JwtStrategy, {
-    provide: APP_GUARD,
-    useClass: RolesGuard,
-  },],
-  exports: [JwtStrategy, PassportModule, UsersService]
+  providers: [
+    UsersService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
+  exports: [JwtStrategy, PassportModule, UsersService],
 })
-export class UserModule { }
+export class UserModule {}

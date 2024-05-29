@@ -34,8 +34,8 @@ export class RefreshTokenStrategy extends PassportStrategy(
   }
 
   async validate(request: Request, payload: JwtPayload) {
-    const refreshToken = request?.cookies['auth._refresh_token.local'];
+    const refresh = request?.cookies['auth._refresh_token.local'];
 
-    return { ...payload, refreshToken };
+    return { ...payload, refresh };
   }
 }

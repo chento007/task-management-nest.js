@@ -1,3 +1,1 @@
-export class UserRespooneDto{
-    
-}
+export class UserRespooneDto {}

@@ -14,7 +14,6 @@ import {
  */
 @Entity()
 export abstract class CommonEntity {
-  
   @PrimaryGeneratedColumn()
   id: number;
 
