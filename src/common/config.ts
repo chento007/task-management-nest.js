@@ -7,7 +7,7 @@ export async function typeormConfig(configService: ConfigService) {
   if (env === 'dev') {
     return {
       type: configService.get<string>('DB_TYPE'),
-      host: 'postgres-container', // Use the service name here
+      host: 'localhost', // Use the service name here
       port: configService.get<string>('DB_PORT'),
       username: configService.get<string>('DB_USERNAME'),
       password: configService.get<string>('DB_PASSWORD'),

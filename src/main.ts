@@ -3,18 +3,11 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import * as fs from 'fs';
-import * as https from 'https';
 
 async function bootstrap() {
-  const httpsOptions = {
-    key: fs.readFileSync('./cert/cert.key'),
-    cert: fs.readFileSync('./cert/cert.crt'),
-    cors: true
-  };
 
 
-  const app = await NestFactory.create(AppModule, { httpsOptions });
+  const app = await NestFactory.create(AppModule);
 
   app.enableCors();
 
